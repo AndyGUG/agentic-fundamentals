@@ -1,0 +1,31 @@
+<svg viewBox="0 0 800 900" xmlns="http://www.w3.org/2000/svg">
+  <!-- S&PE Logo -->
+  <defs>
+    <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#7B3FF2;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1E3A8A;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Top stacked logo -->
+  <g transform="translate(150, 50)">
+    <!-- Layer 1 -->
+    <path d="M 150 80 L 220 20 L 280 60 L 210 120 Z" fill="url(#grad)" opacity="0.9"/>
+    <!-- Layer 2 -->
+    <path d="M 140 140 L 230 60 L 290 120 L 200 200 Z" fill="url(#grad)" opacity="0.7"/>
+    <!-- Layer 3 -->
+    <path d="M 130 200 L 240 100 L 300 180 L 190 280 Z" fill="url(#grad)" opacity="0.5"/>
+  </g>
+  
+  <!-- S -->
+  <text x="50" y="420" font-size="200" font-weight="bold" fill="url(#grad)" font-family="Arial, sans-serif">S</text>
+  
+  <!-- & -->
+  <text x="240" y="420" font-size="200" font-weight="bold" fill="url(#grad)" font-family="Arial, sans-serif">&amp;</text>
+  
+  <!-- P -->
+  <text x="440" y="420" font-size="200" font-weight="bold" fill="url(#grad)" font-family="Arial, sans-serif">P</text>
+  
+  <!-- E -->
+  <text x="620" y="420" font-size="200" font-weight="bold" fill="url(#grad)" font-family="Arial, sans-serif">E</text>
+</svg>

@@ -1,0 +1,35 @@
+# IDE
+.vscode/
+.idea/
+*.iml
+*.swp
+*.swo
+*.swn
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Dependencies
+node_modules/
+.mvn/
+
+# Build
+dist/
+build/
+target/
+*.jar
+*.war
+*.zip
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
