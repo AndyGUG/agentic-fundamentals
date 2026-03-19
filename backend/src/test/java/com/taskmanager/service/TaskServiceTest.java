@@ -1,5 +1,6 @@
 package com.taskmanager.service;
 
+import com.taskmanager.exception.TaskNotFoundException;
 import com.taskmanager.model.Task;
 import com.taskmanager.repository.TaskRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -132,20 +133,30 @@ class TaskServiceTest {
     }
 
     @Test
-    void updateTask_notFound_throwsRuntimeException() {
+    void updateTask_notFound_throwsTaskNotFoundException() {
         when(taskRepository.findById(99L)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> taskService.updateTask(99L, new Task()))
-                .isInstanceOf(RuntimeException.class)
-                .hasMessage("Task not found");
+                .isInstanceOf(TaskNotFoundException.class)
+                .hasMessageContaining("99");
     }
 
     @Test
-    void deleteTask_callsRepository() {
+    void deleteTask_found_callsRepository() {
+        when(taskRepository.existsById(1L)).thenReturn(true);
         doNothing().when(taskRepository).deleteById(1L);
 
         taskService.deleteTask(1L);
 
         verify(taskRepository).deleteById(1L);
+    }
+
+    @Test
+    void deleteTask_notFound_throwsTaskNotFoundException() {
+        when(taskRepository.existsById(99L)).thenReturn(false);
+
+        assertThatThrownBy(() -> taskService.deleteTask(99L))
+                .isInstanceOf(TaskNotFoundException.class)
+                .hasMessageContaining("99");
     }
 }

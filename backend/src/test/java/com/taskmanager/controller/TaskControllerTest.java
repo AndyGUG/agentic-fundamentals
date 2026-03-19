@@ -2,6 +2,7 @@ package com.taskmanager.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.taskmanager.exception.TaskNotFoundException;
 import com.taskmanager.model.Task;
 import com.taskmanager.service.TaskService;
 import org.junit.jupiter.api.BeforeEach;
@@ -115,11 +116,19 @@ class TaskControllerTest {
     @Test
     void updateTask_notFound_returns404() throws Exception {
         when(taskService.updateTask(eq(99L), any(Task.class)))
-                .thenThrow(new RuntimeException("Task not found"));
+                .thenThrow(new TaskNotFoundException(99L));
 
         mockMvc.perform(put("/api/tasks/99")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(sampleTask)))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void deleteTask_notFound_returns404() throws Exception {
+        doThrow(new TaskNotFoundException(99L)).when(taskService).deleteTask(99L);
+
+        mockMvc.perform(delete("/api/tasks/99"))
                 .andExpect(status().isNotFound());
     }
 

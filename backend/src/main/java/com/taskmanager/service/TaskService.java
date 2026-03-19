@@ -1,16 +1,22 @@
 package com.taskmanager.service;
 
+import com.taskmanager.exception.TaskNotFoundException;
 import com.taskmanager.model.Task;
 import com.taskmanager.repository.TaskRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.util.List;
 import java.util.Optional;
 
 @Service
 public class TaskService {
-    @Autowired
-    private TaskRepository taskRepository;
+
+    private final TaskRepository taskRepository;
+
+    public TaskService(TaskRepository taskRepository) {
+        this.taskRepository = taskRepository;
+    }
 
     public List<Task> getAllTasks() {
         return taskRepository.findAll();
@@ -20,6 +26,7 @@ public class TaskService {
         return taskRepository.findById(id);
     }
 
+    @Transactional
     public Task createTask(Task task) {
         if (task.getStatus() == null) {
             task.setStatus(Task.TaskStatus.TODO);
@@ -27,6 +34,7 @@ public class TaskService {
         return taskRepository.save(task);
     }
 
+    @Transactional
     public Task updateTask(Long id, Task taskDetails) {
         return taskRepository.findById(id).map(task -> {
             if (taskDetails.getTitle() != null) {
@@ -45,10 +53,14 @@ public class TaskService {
                 task.setCategory(taskDetails.getCategory());
             }
             return taskRepository.save(task);
-        }).orElseThrow(() -> new RuntimeException("Task not found"));
+        }).orElseThrow(() -> new TaskNotFoundException(id));
     }
 
+    @Transactional
     public void deleteTask(Long id) {
+        if (!taskRepository.existsById(id)) {
+            throw new TaskNotFoundException(id);
+        }
         taskRepository.deleteById(id);
     }
 }

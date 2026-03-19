@@ -3,7 +3,6 @@ package com.taskmanager.controller;
 import com.taskmanager.model.Task;
 import com.taskmanager.service.TaskService;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,10 +10,13 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:3000")
 public class TaskController {
-    @Autowired
-    private TaskService taskService;
+
+    private final TaskService taskService;
+
+    public TaskController(TaskService taskService) {
+        this.taskService = taskService;
+    }
 
     @GetMapping("/api/tasks")
     public ResponseEntity<List<Task>> getAllTasks() {
@@ -28,18 +30,14 @@ public class TaskController {
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @RequestMapping(value = "/api/tasks", method = RequestMethod.POST, consumes = "*/*")
+    @PostMapping("/api/tasks")
     public ResponseEntity<Task> createTask(@Valid @RequestBody Task task) {
         return ResponseEntity.status(HttpStatus.CREATED).body(taskService.createTask(task));
     }
 
-    @RequestMapping(value = "/api/tasks/{id}", method = RequestMethod.PUT, consumes = "*/*")
+    @PutMapping("/api/tasks/{id}")
     public ResponseEntity<Task> updateTask(@PathVariable Long id, @Valid @RequestBody Task taskDetails) {
-        try {
-            return ResponseEntity.ok(taskService.updateTask(id, taskDetails));
-        } catch (RuntimeException e) {
-            return ResponseEntity.notFound().build();
-        }
+        return ResponseEntity.ok(taskService.updateTask(id, taskDetails));
     }
 
     @DeleteMapping("/api/tasks/{id}")
