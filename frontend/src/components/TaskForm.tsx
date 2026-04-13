@@ -55,6 +55,7 @@ export function TaskForm({ editingTask, onSuccess, onCancel }: TaskFormProps) {
   const validateForm = (): boolean => {
     const errors: FormErrors = {}
     // Blocked: < > ' " ` & ; % $ \ and control characters
+    // eslint-disable-next-line no-control-regex
     const invalidChars = /[<>"'`&;%$\\\u0000-\u001f\u007f]/
 
     if (!title.trim()) errors.title = 'Title is required'

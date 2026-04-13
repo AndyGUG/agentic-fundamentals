@@ -46,7 +46,7 @@ describe('getTasks', () => {
 describe('createTask', () => {
   it('calls POST /api/tasks with JSON body and returns created task', async () => {
     mockFetch(mockTask, 201)
-    const { id: _id, ...payload } = mockTask
+    const { id: _, ...payload } = mockTask
     const result = await createTask(payload)
     expect(fetch).toHaveBeenCalledWith('/api/tasks', expect.objectContaining({
       method: 'POST',
@@ -58,7 +58,7 @@ describe('createTask', () => {
 
   it('throws when response is not ok', async () => {
     mockFetch({ errors: { title: 'required' } }, 400)
-    const { id: _id, ...payload } = mockTask
+    const { id: _, ...payload } = mockTask
     await expect(createTask(payload)).rejects.toThrow('Failed to create task')
   })
 })
