@@ -12,12 +12,14 @@ public class Task {
     private Long id;
 
     @NotBlank(message = "Title is required")
-    @Size(min = 1, max = 100, message = "Title must be between 1 and 100 characters")
-    @Column(nullable = false, length = 100)
+    @Size(min = 1, max = 50, message = "Title must be between 1 and 50 characters")
+    @Pattern(regexp = "^[^<>\"'`&;%$\\\\\u0000-\u001f\u007f]+$", message = "Title contains invalid characters")
+    @Column(nullable = false, length = 50)
     private String title;
 
     @NotBlank(message = "Description is required")
     @Size(min = 1, max = 500, message = "Description must be between 1 and 500 characters")
+    @Pattern(regexp = "^[^<>\"'`&;%$\\\\\u0000-\u001f\u007f]+$", message = "Description contains invalid characters")
     @Column(nullable = false, length = 500)
     private String description;
 
@@ -27,11 +29,13 @@ public class Task {
     private TaskStatus status = TaskStatus.TODO;
 
     @NotNull(message = "Due date is required")
+    @FutureOrPresent(message = "Due date must be today or in the future")
     @Column(nullable = false)
     private LocalDate dueDate;
 
     @NotBlank(message = "Category is required")
     @Size(min = 1, max = 50, message = "Category must be between 1 and 50 characters")
+    @Pattern(regexp = "^[^<>\"'`&;%$\\\\\u0000-\u001f\u007f]+$", message = "Category contains invalid characters")
     @Column(nullable = false, length = 50)
     private String category;
 

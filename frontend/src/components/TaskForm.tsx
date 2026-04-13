@@ -1,6 +1,9 @@
 import { useState, useEffect } from 'react'
 import type { Task, TaskStatus, FormErrors } from '../types'
 
+const CATEGORY_HISTORY_KEY = 'categoryHistory'
+const MAX_CATEGORY_HISTORY = 3
+
 interface TaskFormProps {
   editingTask: Task | null
   onSuccess: (task: Task, isUpdate: boolean) => void
@@ -14,6 +17,19 @@ export function TaskForm({ editingTask, onSuccess, onCancel }: TaskFormProps) {
   const [dueDate, setDueDate] = useState('')
   const [category, setCategory] = useState('')
   const [formErrors, setFormErrors] = useState<FormErrors>({})
+  const [categoryHistory, setCategoryHistory] = useState<string[]>(() => {
+    try {
+      const stored = JSON.parse(localStorage.getItem(CATEGORY_HISTORY_KEY) || '[]') as string[]
+      const trimmed = stored.slice(0, MAX_CATEGORY_HISTORY)
+      // Repair any stale localStorage entry that exceeds the limit
+      if (stored.length > MAX_CATEGORY_HISTORY) {
+        localStorage.setItem(CATEGORY_HISTORY_KEY, JSON.stringify(trimmed))
+      }
+      return trimmed
+    } catch {
+      return []
+    }
+  })
 
   useEffect(() => {
     if (editingTask) {
@@ -38,15 +54,27 @@ export function TaskForm({ editingTask, onSuccess, onCancel }: TaskFormProps) {
 
   const validateForm = (): boolean => {
     const errors: FormErrors = {}
+    // Blocked: < > ' " ` & ; % $ \ and control characters
+    const invalidChars = /[<>"'`&;%$\\\u0000-\u001f\u007f]/
 
     if (!title.trim()) errors.title = 'Title is required'
-    else if (title.length > 100) errors.title = 'Title must be 100 characters or less'
+    else if (title.length > 50) errors.title = 'Title must be 50 characters or less'
+    else if (invalidChars.test(title)) errors.title = 'Title contains invalid characters'
 
     if (!description.trim()) errors.description = 'Description is required'
     else if (description.length > 500) errors.description = 'Description must be 500 characters or less'
+    else if (invalidChars.test(description)) errors.description = 'Description contains invalid characters'
 
     if (!category.trim()) errors.category = 'Category is required'
-    if (!dueDate) errors.dueDate = 'Due date is required'
+    else if (invalidChars.test(category)) errors.category = 'Category contains invalid characters'
+
+    if (!dueDate) {
+      errors.dueDate = 'Due date is required'
+    } else {
+      const today = new Date()
+      today.setHours(0, 0, 0, 0)
+      if (new Date(dueDate) < today) errors.dueDate = 'Due date must be today or in the future'
+    }
 
     setFormErrors(errors)
     return Object.keys(errors).length === 0
@@ -69,13 +97,20 @@ export function TaskForm({ editingTask, onSuccess, onCancel }: TaskFormProps) {
     } else {
       onSuccess(taskData as unknown as Task, false)
     }
+
+    // Update category history: prepend new entry, deduplicate, keep max 3
+    const trimmed = taskData.category
+    const updated = [trimmed, ...categoryHistory.filter(c => c !== trimmed)].slice(0, MAX_CATEGORY_HISTORY)
+    setCategoryHistory(updated)
+    localStorage.setItem(CATEGORY_HISTORY_KEY, JSON.stringify(updated))
+
     resetFields()
   }
 
   return (
     <div className="form-section">
       <h2>{editingTask ? 'Edit Task' : 'Add New Task'}</h2>
-      <form onSubmit={handleSubmit} className="form">
+      <form onSubmit={handleSubmit} className="form" autoComplete="off">
         {editingTask && (
           <div className="form-group">
             <label htmlFor="taskId">ID</label>
@@ -88,24 +123,26 @@ export function TaskForm({ editingTask, onSuccess, onCancel }: TaskFormProps) {
           <input
             id="title"
             type="text"
-            placeholder="Enter task title (max 100 chars)"
+            autoComplete="off"
+            placeholder="Enter task title (max 50 chars)"
             value={title}
             onChange={(e) => {
-              setTitle(e.target.value.slice(0, 100))
+              setTitle(e.target.value.slice(0, 50))
               if (formErrors.title) setFormErrors({ ...formErrors, title: undefined })
             }}
-            maxLength={100}
+            maxLength={50}
             className={formErrors.title ? 'error' : ''}
             required
           />
           {formErrors.title && <span className="field-error">{formErrors.title}</span>}
-          <span className="char-count">{title.length}/100</span>
+          <span className="char-count">{title.length}/50</span>
         </div>
 
         <div className="form-group">
           <label htmlFor="description">Description *</label>
           <textarea
             id="description"
+            autoComplete="off"
             placeholder="Enter task description (max 500 chars)"
             value={description}
             onChange={(e) => {
@@ -136,6 +173,7 @@ export function TaskForm({ editingTask, onSuccess, onCancel }: TaskFormProps) {
             <input
               id="category"
               type="text"
+              autoComplete="off"
               placeholder="Enter category (e.g., Work, Personal)"
               value={category}
               onChange={(e) => {
@@ -156,6 +194,7 @@ export function TaskForm({ editingTask, onSuccess, onCancel }: TaskFormProps) {
             id="dueDate"
             type="date"
             value={dueDate}
+            min={new Date().toISOString().split('T')[0]}
             onChange={(e) => {
               setDueDate(e.target.value)
               if (formErrors.dueDate) setFormErrors({ ...formErrors, dueDate: undefined })
