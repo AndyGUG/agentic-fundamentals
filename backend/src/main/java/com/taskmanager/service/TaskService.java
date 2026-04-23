@@ -62,5 +62,8 @@ public class TaskService {
             throw new TaskNotFoundException(id);
         }
         taskRepository.deleteById(id);
+        if (taskRepository.count() == 0) {
+            taskRepository.resetIdSequence();
+        }
     }
 }
