@@ -139,7 +139,7 @@ describe('TaskForm – edit mode', () => {
     renderForm(mockTask)
     const idField = screen.getByLabelText(/^ID$/i)
     expect(idField).toBeDisabled()
-    expect(idField).toHaveValue('42')
+    expect(idField).toHaveValue('0042')
   })
 })
 

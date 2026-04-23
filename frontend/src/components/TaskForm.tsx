@@ -115,7 +115,7 @@ export function TaskForm({ editingTask, onSuccess, onCancel }: TaskFormProps) {
         {editingTask && (
           <div className="form-group">
             <label htmlFor="taskId">ID</label>
-            <input id="taskId" type="text" value={editingTask.id} disabled className="id-field" />
+            <input id="taskId" type="text" value={String(editingTask.id).padStart(4, '0')} disabled className="id-field" />
           </div>
         )}
 

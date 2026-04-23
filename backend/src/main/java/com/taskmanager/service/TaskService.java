@@ -28,6 +28,9 @@ public class TaskService {
 
     @Transactional
     public Task createTask(Task task) {
+        if (taskRepository.count() >= 1000) {
+            throw new IllegalStateException("Task limit reached: maximum 1000 tasks allowed");
+        }
         if (task.getStatus() == null) {
             task.setStatus(Task.TaskStatus.TODO);
         }

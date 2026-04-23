@@ -44,7 +44,7 @@ describe('TaskItem – rendering', () => {
 
   it('renders task id in heading', () => {
     renderItem()
-    expect(screen.getByText(/ID: 1/)).toBeInTheDocument()
+    expect(screen.getByText(/ID: 0001/)).toBeInTheDocument()
   })
 
   it('renders TODO status badge', () => {

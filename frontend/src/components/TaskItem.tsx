@@ -25,7 +25,7 @@ export function TaskItem({ task, onEdit, onDelete, onStatusChange }: TaskItemPro
     <li className={`task-item ${getStatusColor(task.status)}`}>
       <div className="task-content">
         <div className="task-header">
-          <h3>{task.title} <span className="task-id">(ID: {task.id})</span></h3>
+          <h3>{task.title} <span className="task-id">(ID: {String(task.id).padStart(4, '0')})</span></h3>
           <span className={`status-badge ${getStatusColor(task.status)}`}>
             {getStatusLabel(task.status)}
           </span>
