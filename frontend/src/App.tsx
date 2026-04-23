@@ -45,7 +45,6 @@ function App() {
   }
 
   const handleDelete = async (id: number) => {
-    if (!window.confirm('Are you sure you want to delete this task?')) return
     try {
       await deleteTask(id)
       setTasks((prev) => prev.filter((t) => t.id !== id))

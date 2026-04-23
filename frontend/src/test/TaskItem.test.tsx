@@ -77,7 +77,16 @@ describe('TaskItem – interactions', () => {
   it('calls onDelete with task id when Delete button is clicked', async () => {
     const { onDelete } = renderItem()
     await userEvent.click(screen.getByTitle('Delete task'))
+    // confirm dialog appears inline
+    await userEvent.click(screen.getByRole('button', { name: 'Yes' }))
     expect(onDelete).toHaveBeenCalledWith(1)
+  })
+
+  it('does not call onDelete when No is clicked in confirm', async () => {
+    const { onDelete } = renderItem()
+    await userEvent.click(screen.getByTitle('Delete task'))
+    await userEvent.click(screen.getByRole('button', { name: 'No' }))
+    expect(onDelete).not.toHaveBeenCalled()
   })
 
   it('calls onStatusChange with id and new status when dropdown changes', async () => {

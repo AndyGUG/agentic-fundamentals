@@ -588,6 +588,47 @@ button:focus-visible {
   background-color: #b00000;
 }
 
+.delete-confirm {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  white-space: nowrap;
+}
+
+.delete-confirm-text {
+  font-size: 0.85em;
+  color: #ffcccc;
+  font-weight: 500;
+}
+
+.btn-confirm-yes {
+  background-color: #8b0000;
+  color: white;
+  border: none;
+  padding: 0.4rem 0.7rem;
+  font-size: 0.85em;
+  font-weight: 600;
+  border-radius: 6px;
+}
+
+.btn-confirm-yes:hover {
+  background-color: #b00000;
+}
+
+.btn-confirm-no {
+  background-color: #444;
+  color: white;
+  border: none;
+  padding: 0.4rem 0.7rem;
+  font-size: 0.85em;
+  font-weight: 500;
+  border-radius: 6px;
+}
+
+.btn-confirm-no:hover {
+  background-color: #555;
+}
+
 .empty {
   text-align: center;
   padding: 3rem;

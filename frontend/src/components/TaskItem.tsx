@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import type { Task, TaskStatus } from '../types'
 
 interface TaskItemProps {
@@ -21,6 +22,8 @@ function getStatusLabel(status: TaskStatus): string {
 }
 
 export function TaskItem({ task, onEdit, onDelete, onStatusChange }: TaskItemProps) {
+  const [confirmDelete, setConfirmDelete] = useState(false)
+
   return (
     <li className={`task-item ${getStatusColor(task.status)}`}>
       <div className="task-content">
@@ -56,9 +59,17 @@ export function TaskItem({ task, onEdit, onDelete, onStatusChange }: TaskItemPro
         <button className="btn-edit" onClick={() => onEdit(task)} title="Edit task">
           ✏️ Edit
         </button>
-        <button className="btn-delete" onClick={() => onDelete(task.id)} title="Delete task">
-          🗑️ Delete
-        </button>
+        {confirmDelete ? (
+          <span className="delete-confirm">
+            <span className="delete-confirm-text">Delete this task?</span>
+            <button className="btn-confirm-yes" onClick={() => onDelete(task.id)}>Yes</button>
+            <button className="btn-confirm-no" onClick={() => setConfirmDelete(false)}>No</button>
+          </span>
+        ) : (
+          <button className="btn-delete" onClick={() => setConfirmDelete(true)} title="Delete task">
+            🗑️ Delete
+          </button>
+        )}
       </div>
     </li>
   )
