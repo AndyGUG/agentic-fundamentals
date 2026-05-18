@@ -79,7 +79,7 @@ function App() {
       {error && (
         <div className="error">
           <span>⚠️ {error}</span>
-          <button className="close-btn" onClick={() => setError(null)}>×</button>
+          <button className="close-btn" aria-label="Close error" onClick={() => setError(null)}>×</button>
         </div>
       )}
 

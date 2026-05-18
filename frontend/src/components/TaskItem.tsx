@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import type { Task, TaskStatus } from '../types'
+import { ConfirmModal } from './ConfirmModal'
 
 interface TaskItemProps {
   task: Task
@@ -51,6 +52,7 @@ export function TaskItem({ task, onEdit, onDelete, onStatusChange }: TaskItemPro
           onChange={(e) => onStatusChange(task.id, e.target.value as TaskStatus)}
           className="status-select"
           title="Change task status"
+          aria-label="Change task status"
         >
           <option value="TODO">TODO</option>
           <option value="IN_PROGRESS">In Progress</option>
@@ -59,18 +61,17 @@ export function TaskItem({ task, onEdit, onDelete, onStatusChange }: TaskItemPro
         <button className="btn-edit" onClick={() => onEdit(task)} title="Edit task">
           ✏️ Edit
         </button>
-        {confirmDelete ? (
-          <span className="delete-confirm">
-            <span className="delete-confirm-text">Delete this task?</span>
-            <button className="btn-confirm-yes" onClick={() => onDelete(task.id)}>Yes</button>
-            <button className="btn-confirm-no" onClick={() => setConfirmDelete(false)}>No</button>
-          </span>
-        ) : (
-          <button className="btn-delete" onClick={() => setConfirmDelete(true)} title="Delete task">
-            🗑️ Delete
-          </button>
-        )}
+        <button className="btn-delete" onClick={() => setConfirmDelete(true)} title="Delete task">
+          🗑️ Delete
+        </button>
       </div>
+      {confirmDelete && (
+        <ConfirmModal
+          message="Do you really want to delete this task?"
+          onConfirm={() => onDelete(task.id)}
+          onCancel={() => setConfirmDelete(false)}
+        />
+      )}
     </li>
   )
 }

@@ -28,7 +28,7 @@ function renderList(overrides: Partial<Parameters<typeof TaskList>[0]> = {}) {
 describe('TaskList – rendering', () => {
   it('shows loading message when loading=true', () => {
     render(<TaskList tasks={[]} loading={true} onEdit={noop} onDelete={noop} onStatusChange={noop} />)
-    expect(screen.getByText(/loading/i)).toBeInTheDocument()
+    expect(screen.getByRole('status')).toBeInTheDocument()
   })
 
   it('shows empty state message when no tasks', () => {

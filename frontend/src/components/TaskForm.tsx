@@ -175,7 +175,7 @@ export function TaskForm({ editingTask, onSuccess, onCancel }: TaskFormProps) {
               id="category"
               type="text"
               autoComplete="off"
-              placeholder="Enter category (e.g., Work, Personal)"
+              placeholder="Enter category"
               value={category}
               onChange={(e) => {
                 setCategory(e.target.value.slice(0, 50))

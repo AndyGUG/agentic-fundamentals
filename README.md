@@ -110,7 +110,7 @@ Validation errors return HTTP 400 with a structured body:
 | Technology | Version | Purpose |
 |---|---|---|
 | Java | 21 (target) | Language |
-| Spring Boot | 3.2.1 | Application framework |
+| Spring Boot | 3.5.14 | Application framework |
 | Spring Web | — | REST API |
 | Spring Data JPA | — | ORM / data access |
 | Spring Validation | — | Bean validation (JSR-380) |
@@ -118,6 +118,8 @@ Validation errors return HTTP 400 with a structured body:
 | JUnit 5 | — | Unit and integration testing |
 | Mockito | 5.15 | Mocking in tests |
 | JaCoCo | 0.8.13 | Code coverage |
+| SpotBugs | 4.9.8 | Static analysis |
+| Find Security Bugs | 1.13.0 | OWASP Top 10 code scanning |
 | Maven | 3 | Build and dependency management |
 
 ### Database
@@ -137,7 +139,7 @@ Validation errors return HTTP 400 with a structured body:
 ### Prerequisites
 
 - Java 21+
-- Node.js 18+
+- Node.js 20+
 - PostgreSQL 14+
 - Maven 3.8+
 
@@ -223,178 +225,43 @@ The backend supports the following environment variables (with defaults for loca
 ### Communication
 - **REST API** - Standard HTTP/JSON communication
 
-## Prerequisites
+---
 
-- **Node.js** 16+ and npm
-- **Java 17+**
-- **Maven 3.6+**
-- **PostgreSQL 12+**
+## Security
 
-## Setup Instructions
-
-### 1. Database Setup
-
-Create a PostgreSQL database:
-
-```bash
-createdb task_manager_db
-```
-
-Or using psql:
-```sql
-CREATE DATABASE task_manager_db;
-```
-
-Update `backend/src/main/resources/application.properties` if using different credentials:
-```properties
-spring.datasource.username=your_username
-spring.datasource.password=your_password
-```
-
-### 2. Backend Setup
-
-Navigate to the backend directory:
+### Static code analysis (OWASP Top 10)
 
 ```bash
 cd backend
+mvn spotbugs:check
 ```
 
-Build the project:
+Runs SpotBugs with Find Security Bugs to check for OWASP Top 10 code-level vulnerabilities (SQL injection, XSS, insecure deserialization, etc.). No internet access required.
 
-```bash
-mvn clean install
-```
+### Frontend dependency audit
 
-Run the Spring Boot application:
-
-```bash
-mvn spring-boot:run
-```
-
-The backend will start on `http://localhost:8080`
-
-### 3. Frontend Setup
-
-Navigate to the frontend directory:
-
-```bash
-cd ../frontend
-```
-
-Install dependencies:
-
-```bash
-npm install
-```
-
-Start the development server:
-
-```bash
-npm run dev
-```
-
-The frontend will start on `http://localhost:3000`
-
-## API Endpoints
-
-### Tasks
-
-- **GET /api/tasks** - Get all tasks
-- **GET /api/tasks/{id}** - Get task by ID
-- **POST /api/tasks** - Create a new task
-- **PUT /api/tasks/{id}** - Update a task
-- **DELETE /api/tasks/{id}** - Delete a task
-
-### Request/Response Format
-
-**Create Task (POST)**
-```json
-{
-  "title": "Task Title",
-  "description": "Task Description",
-  "status": "TODO",
-  "dueDate": "2026-05-01",
-  "category": "Backend"
-}
-```
-
-**Task Response**
-```json
-{
-  "id": 1,
-  "title": "Task Title",
-  "description": "Task Description",
-  "status": "TODO",
-  "dueDate": "2026-05-01",
-  "category": "Backend"
-}
-```
-
-## Features
-
-- ✅ Create, read, update, and delete tasks
-- ✅ Status tracking: TODO → IN_PROGRESS → DONE
-- ✅ Category-based filtering and free-text search
-- ✅ Sort by due date or status
-- ✅ Client- and server-side validation with field-level error messages
-- ✅ Harmful character blocking on all text inputs (`<>"'\`&;%$\`)
-- ✅ Due-date validation: past dates rejected
-- ✅ Browser autofill disabled (`autoComplete="off"`) on all form fields
-- ✅ Category history stored in localStorage (latest 3 entries)
-- ✅ CORS configured for local development
-- ✅ Responsive design
-
-## Development Scripts
-
-### Frontend
-
-- `npm run dev` - Start development server
-- `npm run build` - Build for production
-- `npm run lint` - Run ESLint
-- `npm run preview` - Preview production build
-
-### Backend
-
-- `mvn clean install` - Clean and build
-- `mvn spring-boot:run` - Run application
-- `mvn test` - Run tests
-- `mvn package` - Create JAR file
-
-## Environment Configuration
-
-### Frontend (vite.config.ts)
-The frontend is configured to proxy API calls to the backend:
-```
-/api/* → http://localhost:8080/api/*
-```
-
-### Backend (application.properties)
-- Database URL: `jdbc:postgresql://localhost:5432/task_manager_db`
-- Server Port: `8080`
-- CORS: Enabled for `http://localhost:3000`
-
-## Building for Production
-
-### Frontend
 ```bash
 cd frontend
-npm run build
-# Output in: frontend/dist
+npm audit
 ```
 
-### Backend
+### Backend dependency vulnerabilities (NVD)
+
+Requires a free [NVD API key](https://nvd.nist.gov/developers/request-an-api-key):
+
 ```bash
 cd backend
-mvn package
-# Output: backend/target/task-manager-backend-0.0.1-SNAPSHOT.jar
+mvn org.owasp:dependency-check-maven:check -DfailBuildOnCVSS=7 -DnvdApiKey=YOUR_KEY
 ```
+
+---
 
 ## Troubleshooting
 
 **Database Connection Error**
 - Ensure PostgreSQL is running
 - Verify database name, username, and password in `application.properties`
-- Create database if it doesn't exist
+- Create database if it doesn't exist: `createdb task_manager_db`
 
 **Frontend Can't Connect to Backend**
 - Ensure backend is running on port 8080
@@ -404,18 +271,15 @@ mvn package
 **Build Errors**
 - Clear Maven cache: `mvn clean`
 - Clear Node modules: `rm -rf frontend/node_modules && npm install`
-- Ensure correct Java version: `java -version` (should be 17+)
+- Ensure correct Java version: `java -version` (should be 21+)
 
 ## Contributing
 
 1. Create a feature branch
 2. Make your changes
-3. Submit a pull request
+3. Run all tests: `cd backend && mvn verify` and `cd frontend && npm test && npm run test:e2e`
+4. Submit a pull request
 
 ## License
 
 MIT License - feel free to use this project as a template.
-
-## Support
-
-For issues and questions, please create an issue in the repository.

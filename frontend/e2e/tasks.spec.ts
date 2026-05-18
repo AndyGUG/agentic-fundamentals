@@ -156,10 +156,10 @@ test.describe('Task Manager – CRUD flows', () => {
     await submitForm(page, 'add')
     await expect(page.getByText(title)).toBeVisible()
 
-    // Accept confirm dialog
-    page.on('dialog', dialog => dialog.accept())
+    // Click delete button, then confirm in the custom modal
     const taskItem = page.locator('li').filter({ hasText: title })
     await taskItem.getByTitle('Delete task').click()
+    await page.getByRole('dialog').getByRole('button', { name: 'Delete', exact: true }).click()
 
     await expect(page.getByText(title)).not.toBeVisible()
   })

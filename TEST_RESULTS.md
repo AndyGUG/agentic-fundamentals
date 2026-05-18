@@ -2,7 +2,7 @@
 
 ## Run Summary
 
-| Date | 2026-04-13 |
+| Date | 2026-05-18 |
 |---|---|
 | Time | 14:50 CEST |
 | Operator | a.guggenbichler |
@@ -10,15 +10,13 @@
 
 ### Changes since previous run
 
-- Title max length reduced: 100 → 50 chars (backend `@Size`, `@Column`; frontend `maxLength`, `slice`, counter)
-- Harmful character validation (`<>"'\`&;%$\`) added to all text fields (client + server)
-- Due-date past validation added (client + server: `@FutureOrPresent`)
-- Category history: localStorage-backed, max 3 newest entries, chips removed from UI display
-- `autoComplete="off"` on form element and all text inputs to block browser autofill
-- `LocalStorageMock` added to `src/test/setup.ts` for jsdom compatibility
-- `vite.config.ts`: added `environmentOptions.jsdom.url = 'http://localhost'`  
-- Backend `TaskControllerTest`: 15 → 19 tests (added harmful-char, SQL injection, apostrophe, HTML tag cases)
-- Frontend `TaskForm.test.tsx`: 13 → 19 tests (added validation edge cases)
+- Spring Boot upgraded 3.2.1 → 3.5.14 (security update)
+- GUI/accessibility overhaul: WCAG-compliant error colours, 44px touch targets, `prefers-reduced-motion` support, full light-mode palette, loading spinner with `role="status"`, focus trap + Escape key in ConfirmModal, `aria-labelledby` on dialog, `aria-label` on status select and close button
+- ConfirmModal buttons renamed: "Yes" → "Delete", "No" → "Cancel"; button order now Cancel / Delete
+- npm dependencies updated: axios, follow-redirects, postcss (0 vulnerabilities remaining)
+- SpotBugs 4.9.8 + Find Security Bugs 1.13.0 added for OWASP Top 10 static analysis
+- Frontend unit test count: 51 → 52 (TaskList loading spinner — `role="status"`)
+- Playwright DELETE test fixed: custom React modal requires `getByRole('dialog')` scope, not native `page.on('dialog')`
 
 ### Environment
 
@@ -49,7 +47,7 @@
 
 | Test Class | Tests | Failures | Errors | Skipped | Duration |
 |---|---|---|---|---|---|
-| `TaskIntegrationIT` | 11 | 0 | 0 | 0 | ~3.5 s |
+| `TaskIntegrationIT` | 11 | 0 | 0 | 0 | ~3.8 s |
 | **Subtotal** | **11** | **0** | **0** | **0** | |
 
 ### Backend Result
@@ -71,16 +69,16 @@
 |---|---|---|
 | `src/test/api.test.ts` | 9 | ~6 ms |
 | `src/test/TaskItem.test.tsx` | 12 | ~140 ms |
-| `src/test/TaskList.test.tsx` | 11 | ~250 ms |
+| `src/test/TaskList.test.tsx` | 12 | ~250 ms |
 | `src/test/TaskForm.test.tsx` | 19 | ~420 ms |
-| **Subtotal** | **51** | |
+| **Subtotal** | **52** | |
 
 ### Frontend Unit Result
 
 ```
  Test Files  4 passed (4)
-      Tests  51 passed (51)
-   Duration  ~1.8s
+      Tests  52 passed (52)
+   Duration  ~10.6s
 ```
 
 ---
@@ -93,9 +91,9 @@
 
 | # | Test | Duration | Result |
 |---|---|---|---|
-| 1 | `page loads and shows Task Manager heading` | 1.3 s | ✅ passed |
-| 2 | `CREATE – fill and submit form creates a new task` | 1.1 s | ✅ passed |
-| 3 | `CREATE – submitting empty form shows validation errors` | 0.9 s | ✅ passed |
+| 1 | `page loads and shows Task Manager heading` | 1.4 s | ✅ passed |
+| 2 | `CREATE – fill and submit form creates a new task` | 1.2 s | ✅ passed |
+| 3 | `CREATE – submitting empty form shows validation errors` | 1.0 s | ✅ passed |
 | 4 | `READ – created task appears in the list with correct details` | 1.1 s | ✅ passed |
 | 5 | `UPDATE – editing a task updates its title` | 1.2 s | ✅ passed |
 | 6 | `UPDATE – changing status via dropdown updates badge` | 1.2 s | ✅ passed |
@@ -106,7 +104,28 @@
 
 ```
 Running 8 tests using 1 worker
-8 passed (10.4s)
+8 passed (10.9s)
+```
+
+---
+
+## Security Scan
+
+**Command:** `cd backend && mvn spotbugs:check`  
+**Tools:** SpotBugs 4.9.8 + Find Security Bugs 1.13.0
+
+| Finding | Severity | Verdict |
+|---|---|---|
+| `SIC_INNER_SHOULD_BE_STATIC_ANON` in `TaskManagerApplication` | Low | Code style only |
+| `EI_EXPOSE_REP2` in `TaskController` | Medium | False positive — Spring `@Autowired` pattern |
+| `SPRING_ENDPOINT` (×5) in `TaskController` | Low | Informational — no vulnerability |
+
+**No OWASP Top 10 vulnerabilities found** (SQL injection, XSS, path traversal, insecure deserialization — all clean).
+
+**Command:** `cd frontend && npm audit`
+
+```
+found 0 vulnerabilities
 ```
 
 ---
@@ -117,14 +136,13 @@ Running 8 tests using 1 worker
 |---|---|---|---|
 | Backend unit | 37 | 37 | 0 |
 | Backend integration | 11 | 11 | 0 |
-| Frontend unit | 51 | 51 | 0 |
+| Frontend unit | 52 | 52 | 0 |
 | E2E (Playwright) | 8 | 8 | 0 |
-| **Total** | **107** | **107** | **0** |
-
+| **Total** | **108** | **108** | **0** |
 
 ---
 
-## Previous Run (2026-04-13 · 12:19 CEST)
+## Previous Run (2026-04-13 · 14:50 CEST)
 
 | Layer | Tests | Passed | Failed |
 |---|---|---|---|

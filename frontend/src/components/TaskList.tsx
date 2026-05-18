@@ -89,7 +89,9 @@ export function TaskList({ tasks, loading, onEdit, onDelete, onStatusChange }: T
       </div>
 
       {loading ? (
-        <div className="loading">⏳ Loading tasks...</div>
+        <div className="loading-spinner" role="status" aria-label="Loading tasks">
+          <div className="spinner" />
+        </div>
       ) : visible.length === 0 ? (
         <div className="empty">
           <p>{searchTerm || filterCategory

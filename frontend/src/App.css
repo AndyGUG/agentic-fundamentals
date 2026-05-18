@@ -46,11 +46,7 @@ button:focus-visible {
   padding: 2rem;
 }
 
-.container {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-}
+
 
 .header {
   text-align: center;
@@ -106,6 +102,15 @@ button:focus-visible {
   }
 }
 
+@media (prefers-reduced-motion: reduce) {
+  .accenture-logo {
+    animation: none;
+  }
+  .error {
+    animation: none;
+  }
+}
+
 .subtitle {
   margin: 0;
   font-size: 1.1rem;
@@ -113,8 +118,9 @@ button:focus-visible {
 }
 
 .error {
-  background-color: #8b0000;
-  color: #ffd700;
+  background-color: #2d1111;
+  border: 1px solid #6b2222;
+  color: #ff8a80;
   padding: 1rem;
   border-radius: 8px;
   margin-bottom: 1.5rem;
@@ -131,16 +137,19 @@ button:focus-visible {
 .close-btn {
   background: transparent;
   border: none;
-  color: #ffd700;
+  color: inherit;
   font-size: 1.5rem;
   cursor: pointer;
   padding: 0;
-  width: auto;
-  height: auto;
+  min-width: 44px;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .close-btn:hover {
-  color: white;
+  opacity: 0.7;
   border: none;
 }
 
@@ -588,27 +597,49 @@ button:focus-visible {
   background-color: #b00000;
 }
 
-.delete-confirm {
+/* Delete confirmation modal */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.6);
   display: flex;
   align-items: center;
-  gap: 0.4rem;
-  white-space: nowrap;
+  justify-content: center;
+  z-index: 1000;
 }
 
-.delete-confirm-text {
-  font-size: 0.85em;
-  color: #ffcccc;
-  font-weight: 500;
+.modal-box {
+  background-color: #2a2a2a;
+  border: 1px solid #444;
+  border-radius: 12px;
+  padding: 2rem 2.5rem;
+  min-width: 320px;
+  max-width: 480px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+  text-align: center;
+}
+
+.modal-message {
+  font-size: 1.1rem;
+  color: #f0f0f0;
+  margin: 0 0 1.5rem 0;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
 }
 
 .btn-confirm-yes {
   background-color: #8b0000;
   color: white;
   border: none;
-  padding: 0.4rem 0.7rem;
-  font-size: 0.85em;
+  padding: 0.55rem 1.4rem;
+  font-size: 0.95em;
   font-weight: 600;
-  border-radius: 6px;
+  border-radius: 8px;
+  cursor: pointer;
 }
 
 .btn-confirm-yes:hover {
@@ -619,10 +650,11 @@ button:focus-visible {
   background-color: #444;
   color: white;
   border: none;
-  padding: 0.4rem 0.7rem;
-  font-size: 0.85em;
+  padding: 0.55rem 1.4rem;
+  font-size: 0.95em;
   font-weight: 500;
-  border-radius: 6px;
+  border-radius: 8px;
+  cursor: pointer;
 }
 
 .btn-confirm-no:hover {
@@ -643,4 +675,209 @@ button:focus-visible {
   font-size: 1.1rem;
 }
 
+.loading-spinner {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 3rem;
+}
+
+.spinner {
+  width: 36px;
+  height: 36px;
+  border: 3px solid #444;
+  border-top-color: #646cff;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .spinner {
+    animation: none;
+    border-color: #646cff;
+    opacity: 0.7;
+  }
+}
+
+@media (prefers-color-scheme: light) {
+  #root {
+    background-color: #f0f2f5;
+  }
+
+  .form-section,
+  .tasks-section {
+    background-color: #ffffff;
+    border-color: #e0e0e0;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  }
+
+  .form-section h2,
+  .tasks-section h2 {
+    border-bottom-color: #e0e0e0;
+  }
+
+  .form-group label {
+    color: #374151;
+  }
+
+  .form-group input,
+  .form-group textarea,
+  .form-group select {
+    background-color: #f9fafb;
+    color: #111827;
+    border-color: #d1d5db;
+  }
+
+  .form-group input:focus,
+  .form-group textarea:focus,
+  .form-group select:focus {
+    background-color: #ffffff;
+  }
+
+  .form-group input.id-field {
+    background-color: #f3f4f6;
+    color: #6b7280;
+  }
+
+  .char-count {
+    color: #6b7280;
+  }
+
+  .sort-controls {
+    background-color: #f3f4f6;
+  }
+
+  .sort-controls label {
+    color: #374151;
+  }
+
+  .sort-controls select {
+    background-color: #ffffff;
+    color: #111827;
+    border-color: #d1d5db;
+  }
+
+  .search-input,
+  .category-filter {
+    background-color: #f9fafb;
+    color: #111827;
+    border-color: #d1d5db;
+  }
+
+  .search-input:focus,
+  .category-filter:focus {
+    background-color: #ffffff;
+  }
+
+  .task-item {
+    background-color: #f9fafb;
+    border: 1px solid #e5e7eb;
+    border-left: 4px solid #646cff;
+  }
+
+  .task-item.status-todo {
+    border-left-color: #e65100;
+  }
+
+  .task-item.status-in-progress {
+    border-left-color: #1565c0;
+  }
+
+  .task-item.status-done {
+    border-left-color: #2e7d32;
+  }
+
+  .task-item:hover {
+    background-color: #eeefff;
+    box-shadow: 0 2px 8px rgba(100, 108, 255, 0.1);
+  }
+
+  .task-header h3 {
+    color: #3730a3;
+  }
+
+  .task-header h3 .task-id {
+    color: #6b7280;
+  }
+
+  .task-content .description {
+    color: #374151;
+  }
+
+  .task-content .due-date {
+    color: #6b7280;
+  }
+
+  .task-content .category-badge {
+    color: #1565c0;
+    background-color: rgba(21, 101, 192, 0.09);
+  }
+
+  .status-select {
+    background-color: #ffffff;
+    color: #111827;
+  }
+
+  .status-select:hover {
+    background-color: #f0f0ff;
+  }
+
+  .btn-secondary {
+    background-color: #e5e7eb;
+    color: #374151;
+    border-color: #d1d5db;
+  }
+
+  .btn-secondary:hover {
+    background-color: #d1d5db;
+    border-color: #9ca3af;
+  }
+
+  .error {
+    background-color: #fdecea;
+    border-color: #ef9a9a;
+    color: #c62828;
+  }
+
+  .spinner {
+    border-color: #e5e7eb;
+    border-top-color: #646cff;
+  }
+
+  .modal-box {
+    background-color: #ffffff;
+    border-color: #e0e0e0;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+  }
+
+  .modal-message {
+    color: #111827;
+  }
+
+  .btn-confirm-no {
+    background-color: #e5e7eb;
+    color: #374151;
+  }
+
+  .btn-confirm-no:hover {
+    background-color: #d1d5db;
+  }
+
+  .empty {
+    background-color: #f9fafb;
+    border-color: #e0e0e0;
+  }
+
+  .empty p {
+    color: #6b7280;
+  }
+
+  .loading {
+    color: #6b7280;
+  }
+}
 
